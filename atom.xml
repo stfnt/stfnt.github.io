@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-03-14T08:09:38.004Z</updated>
+  <updated>2018-03-14T12:29:20.803Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -17,16 +17,31 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>文章</title>
-    <link href="http://yoursite.com/2018/03/14/%E6%96%87%E7%AB%A0/"/>
-    <id>http://yoursite.com/2018/03/14/文章/</id>
-    <published>2018-03-14T08:09:37.000Z</published>
-    <updated>2018-03-14T08:09:38.004Z</updated>
+    <title>test</title>
+    <link href="http://yoursite.com/2018/03/14/test/"/>
+    <id>http://yoursite.com/2018/03/14/test/</id>
+    <published>2018-03-14T12:27:15.712Z</published>
+    <updated>2018-03-14T12:29:20.803Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Big-tiltle"><a href="#Big-tiltle" class="headerlink" title="Big tiltle"></a>Big tiltle</h1><h2 id="medium-title"><a href="#medium-title" class="headerlink" title="medium title"></a>medium title</h2><h3 id="small-title"><a href="#small-title" class="headerlink" title="small title"></a>small title</h3>]]></content>
     
     <summary type="html">
     
+      
+      
+        &lt;h1 id=&quot;Big-tiltle&quot;&gt;&lt;a href=&quot;#Big-tiltle&quot; class=&quot;headerlink&quot; title=&quot;Big tiltle&quot;&gt;&lt;/a&gt;Big tiltle&lt;/h1&gt;&lt;h2 id=&quot;medium-title&quot;&gt;&lt;a href=&quot;#medium-ti
+      
+    
     </summary>
     
+      <category term="test" scheme="http://yoursite.com/categories/test/"/>
+    
+    
+      <category term="test" scheme="http://yoursite.com/tags/test/"/>
+    
+      <category term="random" scheme="http://yoursite.com/tags/random/"/>
+    
+      <category term="my" scheme="http://yoursite.com/tags/my/"/>
     
   </entry>
   
