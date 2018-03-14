@@ -89,13 +89,13 @@
 <meta property="og:site_name" content="stfnt">
 <meta property="og:description" content="类比RxJava,glide,JavaPoet这些优秀的android流式api真是令人感叹">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/03/14/浅谈glide/C:/Users/Administrator/Desktop/md/glide_res_load.png">
-<meta property="og:image" content="http://yoursite.com/2018/03/14/浅谈glide/C:/Users/Administrator/Desktop/md/缓存流程.png">
-<meta property="og:updated_time" content="2018-03-14T12:45:43.491Z">
+<meta property="og:image" content="http://yoursite.com/2018/03/14/浅谈glide/glide_res_load.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/14/浅谈glide/缓存流程.png">
+<meta property="og:updated_time" content="2018-03-14T13:38:59.814Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="glide阅读笔记">
 <meta name="twitter:description" content="类比RxJava,glide,JavaPoet这些优秀的android流式api真是令人感叹">
-<meta name="twitter:image" content="http://yoursite.com/2018/03/14/浅谈glide/C:/Users/Administrator/Desktop/md/glide_res_load.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/03/14/浅谈glide/glide_res_load.png">
 
 
 
@@ -377,7 +377,7 @@
             .into(imageView);
             //such beatiful
 </code></pre><p>glide 资源加载策略</p>
-<p><img src="/2018/03/14/浅谈glide/C:/Users\Administrator\Desktop\md\glide_res_load.png" alt="glide_res_load"></p>
+<p><img src="/2018/03/14/浅谈glide/glide_res_load.png" alt="glide_res_load"></p>
 <p>glide 里面的泛型用的非常好</p>
 <p>&lt;model,data&gt;  从model到data的映射</p>
 <p>可以为 &lt;url,InputStream&gt;     &lt;file,inputStream&gt;    &lt;cache,inputStream&gt;</p>
@@ -404,7 +404,7 @@
 <p>ArrayPool  数组池 并提供了ByteArrayPool 和IntArrayPool两种实现</p>
 <p>再看资源的加载流程，如何从一个url得到一个InputStream，&lt;model，data&gt;</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">EngineResource&lt;?&gt; cached  =loadFromCache(key,isMemoryCacheable);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(cached!=<span class="keyword">null</span>)&#123;</span><br><span class="line"></span><br><span class="line">cb.onResourceReady(cached);</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">&#125;  <span class="comment">//先从内存查找</span></span><br><span class="line"></span><br><span class="line">EngineResource&lt;?&gt; activie = loadFromActiveResources(key,isMemoryCacheable);</span><br><span class="line"><span class="comment">// 再从第二级缓存 常用的Resources HashMap中查找</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(active!=<span class="keyword">null</span>)&#123;</span><br><span class="line"></span><br><span class="line">cb.onResourceReady(activie); <span class="comment">//找到了，回调</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">EngineJob current = job.get(key);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(current != <span class="keyword">null</span>)&#123;</span><br><span class="line"></span><br><span class="line">current.addCallback(cb);</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> LoadStatus(cb,current);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">EngineJob engineJob = engineJobFactory.build(key,isMemoryCacheable);</span><br><span class="line"></span><br><span class="line">DecodeJob&lt;T,Z,R&gt; decodeJob = <span class="keyword">new</span> DecodeJob(key,width,height,fetcher,loadProvider,transformation,transcoder,diskCacheProvider,diskCacheStrategy,priority);</span><br><span class="line"></span><br><span class="line">EngineRunnable runnable = <span class="keyword">new</span> EngineRunnable(engineJob,decodeJob,priortiy);</span><br><span class="line"></span><br><span class="line">jobs.put(key,engineJob);</span><br><span class="line"></span><br><span class="line">engineJob.addCallback(cb);</span><br><span class="line"></span><br><span class="line">engineJob.start(runnable);  <span class="comment">// 开始获取数据</span></span><br></pre></td></tr></table></figure>
-<p><img src="/2018/03/14/浅谈glide/C:/Users\Administrator\Desktop\md\缓存流程.png" alt="缓存流程"></p>
+<p><img src="/2018/03/14/浅谈glide/缓存流程.png" alt="缓存流程"></p>
 <p>这里的&lt;model,Data&gt; 配置了接口，并提供了volley和okhttp的实现</p>
 <p>再看下 glide的三大操作</p>
 <p>with  —-&gt;load  —&gt;into</p>
@@ -483,8 +483,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/14/dynamic-load-apk/" rel="next" title="DL动态加载阅读笔记">
-                <i class="fa fa-chevron-left"></i> DL动态加载阅读笔记
+              <a href="/2018/03/14/test/" rel="next" title="test">
+                <i class="fa fa-chevron-left"></i> test
               </a>
             
           </div>
@@ -493,8 +493,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/03/14/dex 脱壳mark/" rel="prev" title="dex脱壳和某个直播app逆向浅谈">
-                dex脱壳和某个直播app逆向浅谈 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/03/14/dynamic-load-apk/" rel="prev" title="DL动态加载阅读笔记">
+                DL动态加载阅读笔记 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
