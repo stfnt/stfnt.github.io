@@ -89,7 +89,7 @@
 <meta property="og:site_name" content="stfnt">
 <meta property="og:description" content="类比360安全卫生的添加插件按钮，热修复等，android插件化是常见的一种技术 DL机制提供了动态加载的实现:https://github.com/singwhatiwanna/dynamic-load-apk 插件化的apk作为独立的apk可以独自安装，也可以用DexClassLoader加载，获取其中需要调用的Activity类，再反射调用即可 需要解决的两大问题: 资源管理 ： 插件中的R">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-14T12:36:32.860Z">
+<meta property="og:updated_time" content="2018-03-14T12:45:29.621Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="DL动态加载阅读笔记">
 <meta name="twitter:description" content="类比360安全卫生的添加插件按钮，热修复等，android插件化是常见的一种技术 DL机制提供了动态加载的实现:https://github.com/singwhatiwanna/dynamic-load-apk 插件化的apk作为独立的apk可以独自安装，也可以用DexClassLoader加载，获取其中需要调用的Activity类，再反射调用即可 需要解决的两大问题: 资源管理 ： 插件中的R">
@@ -370,6 +370,7 @@
 <p>需要解决的两大问题:</p>
 <p>资源管理 ： 插件中的R.drawable.aaaaaa.jpg 在宿主app里面并不存在</p>
 <p>Activity生命周期管理：因为Activity是反射生成的，当你按了返回按钮的时候，Activity只是一个普通类，它并不知道你按下了返回按钮</p>
+<a id="more"></a>
 <p>#资源管理:</p>
 <p>activity的工作主要是由ContextImpl来完成的， 它在activity中是一个叫做mBase的成员变量。注意到Context中有如下两个抽象方法，看起来是和资源有关的，实际上context就是通过它们来获取资源的，这两个抽象方法的真正实现在ContextImpl中。也即是说，只要我们自己实现这两个方法，就可以解决资源问题了</p>
 <p>/*<em> Return an AssetManager instance for your application’s package. </em>/<br>​    public abstract AssetManager getAssets();</p>
@@ -468,8 +469,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/03/14/dex 脱壳mark/" rel="prev" title="dex脱壳和某个直播app逆向浅谈">
-                dex脱壳和某个直播app逆向浅谈 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/03/14/DuiLib阅读笔记/" rel="prev" title="duilib阅读笔记">
+                duilib阅读笔记 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

@@ -81,22 +81,22 @@
 
 
 
-<meta name="description" content="之前读过一次 好多忘记了 mark一下 阅读的时候 尽量去理解其思想，其优秀的设计 和其逻辑实现 地址：https://github.com/duilib/duilib DuiLib 是windows下一个出色的皮肤库，通过解析xml生成对应的布局，类似于android的xml布局 DuiLib的控件都是自绘的，不是一个窗口的模式，以前的windows mfc开发的控件窗口是可以用vs工具spy+">
+<meta name="description" content="之前读过一次 好多忘记了 mark一下 阅读的时候 尽量去理解其思想，其优秀的设计 和其逻辑实现 地址：https://github.com/duilib/duilib">
 <meta name="keywords" content="c++,笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="duilib阅读笔记">
 <meta property="og:url" content="http://yoursite.com/2018/03/14/DuiLib阅读笔记/index.html">
 <meta property="og:site_name" content="stfnt">
-<meta property="og:description" content="之前读过一次 好多忘记了 mark一下 阅读的时候 尽量去理解其思想，其优秀的设计 和其逻辑实现 地址：https://github.com/duilib/duilib DuiLib 是windows下一个出色的皮肤库，通过解析xml生成对应的布局，类似于android的xml布局 DuiLib的控件都是自绘的，不是一个窗口的模式，以前的windows mfc开发的控件窗口是可以用vs工具spy+">
+<meta property="og:description" content="之前读过一次 好多忘记了 mark一下 阅读的时候 尽量去理解其思想，其优秀的设计 和其逻辑实现 地址：https://github.com/duilib/duilib">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/03/14/DuiLib阅读笔记/core.png">
-<meta property="og:image" content="http://yoursite.com/2018/03/14/DuiLib阅读笔记/Layout.png">
-<meta property="og:image" content="http://yoursite.com/2018/03/14/DuiLib阅读笔记/Xml.png">
-<meta property="og:updated_time" content="2018-03-14T12:35:38.881Z">
+<meta property="og:image" content="http://yoursite.com/2018/03/14/images/core.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/14/images/Layout.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/14/images/Xml.png">
+<meta property="og:updated_time" content="2018-03-14T12:56:01.292Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="duilib阅读笔记">
-<meta name="twitter:description" content="之前读过一次 好多忘记了 mark一下 阅读的时候 尽量去理解其思想，其优秀的设计 和其逻辑实现 地址：https://github.com/duilib/duilib DuiLib 是windows下一个出色的皮肤库，通过解析xml生成对应的布局，类似于android的xml布局 DuiLib的控件都是自绘的，不是一个窗口的模式，以前的windows mfc开发的控件窗口是可以用vs工具spy+">
-<meta name="twitter:image" content="http://yoursite.com/2018/03/14/DuiLib阅读笔记/core.png">
+<meta name="twitter:description" content="之前读过一次 好多忘记了 mark一下 阅读的时候 尽量去理解其思想，其优秀的设计 和其逻辑实现 地址：https://github.com/duilib/duilib">
+<meta name="twitter:image" content="http://yoursite.com/2018/03/14/images/core.png">
 
 
 
@@ -371,10 +371,11 @@
         <p>之前读过一次 好多忘记了 mark一下</p>
 <p>阅读的时候 尽量去理解其思想，其优秀的设计 和其逻辑实现</p>
 <p>地址：<a href="https://github.com/duilib/duilib" target="_blank" rel="noopener">https://github.com/duilib/duilib</a></p>
+<a id="more"></a>
 <p>DuiLib 是windows下一个出色的皮肤库，通过解析xml生成对应的布局，类似于android的xml布局</p>
 <p>DuiLib的控件都是自绘的，不是一个窗口的模式，以前的windows mfc开发的控件窗口是可以用vs工具spy++捕获的</p>
 <p>可以先看下目录结构</p>
-<p><img src="core.png" alt="core"></p>
+<p><img src="../images/core.png" alt=""></p>
 <p>由所见即所得可知:</p>
 <p>UIBase.h   基本UI</p>
 <p>UIContainer   UI装配器</p>
@@ -385,11 +386,11 @@
 <p>UIRender      UI渲染，预加载图片，双缓冲绘制图片等</p>
 <p>可以看出整个项目的类命名是非常清晰的，都以UI开头，所见即所得，这是非常值得学习的</p>
 <p>DuilLib其中提供了五种布局</p>
-<p><img src="Layout.png" alt="Layout"></p>
+<p><img src="../images/Layout.png" alt="Layout"></p>
 <p>所见即所得，可以看出分别是子布局，水平布局，Tab布局，Title布局，垂直布局</p>
 <p>其中以水平布局 和垂直布局最为常用</p>
 <p>先看xml的加载</p>
-<p>常规xml通常是这样<img src="Xml.png" alt="Xml"></p>
+<p>常规xml通常是这样<img src="../images/Xml.png" alt="Xml"></p>
 <p>xml通常可以分为 </p>
 <p>&lt;?  ?&gt;   </p>
 <!--  -->  注释<br><br><name id="1"><br><br><name id="2"><br><br>​    <key></key><br><br></name><br><br>所以需要解析”&lt;?”，<!--,<name />  <name> </name> 这些标签
@@ -478,8 +479,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/14/dex 脱壳mark/" rel="next" title="dex脱壳和某个直播app逆向浅谈">
-                <i class="fa fa-chevron-left"></i> dex脱壳和某个直播app逆向浅谈
+              <a href="/2018/03/14/dynamic-load-apk/" rel="next" title="DL动态加载阅读笔记">
+                <i class="fa fa-chevron-left"></i> DL动态加载阅读笔记
               </a>
             
           </div>
