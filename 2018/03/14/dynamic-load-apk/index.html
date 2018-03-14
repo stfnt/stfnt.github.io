@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="笔记,android," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="stfnt" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="类比360安全卫生的添加插件按钮，热修复等，android插件化是常见的一种技术 DL机制提供了动态加载的实现:https://github.com/singwhatiwanna/dynamic-load-apk 插件化的apk作为独立的apk可以独自安装，也可以用DexClassLoader加载，获取其中需要调用的Activity类，再反射调用即可 需要解决的两大问题: 资源管理 ： 插件中的R">
+<meta name="keywords" content="笔记,android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DL动态加载阅读笔记">
+<meta property="og:url" content="http://yoursite.com/2018/03/14/dynamic-load-apk/index.html">
+<meta property="og:site_name" content="stfnt">
+<meta property="og:description" content="类比360安全卫生的添加插件按钮，热修复等，android插件化是常见的一种技术 DL机制提供了动态加载的实现:https://github.com/singwhatiwanna/dynamic-load-apk 插件化的apk作为独立的apk可以独自安装，也可以用DexClassLoader加载，获取其中需要调用的Activity类，再反射调用即可 需要解决的两大问题: 资源管理 ： 插件中的R">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-14T12:36:32.860Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DL动态加载阅读笔记">
+<meta name="twitter:description" content="类比360安全卫生的添加插件按钮，热修复等，android插件化是常见的一种技术 DL机制提供了动态加载的实现:https://github.com/singwhatiwanna/dynamic-load-apk 插件化的apk作为独立的apk可以独自安装，也可以用DexClassLoader加载，获取其中需要调用的Activity类，再反射调用即可 需要解决的两大问题: 资源管理 ： 插件中的R">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/14/dynamic-load-apk/"/>
+
+
+
+
+
+  <title>DL动态加载阅读笔记 | stfnt</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?66ca28a70df5af0241ddf9fae0e42201";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">stfnt</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/14/dynamic-load-apk/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="stfnt">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="stfnt">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">DL动态加载阅读笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-14T20:39:51+08:00">
+                2018-03-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/github开源阅读笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">github开源阅读笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/14/dynamic-load-apk/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2018/03/14/dynamic-load-apk/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>类比360安全卫生的添加插件按钮，热修复等，android插件化是常见的一种技术</p>
+<p>DL机制提供了动态加载的实现:<a href="https://github.com/singwhatiwanna/dynamic-load-apk" target="_blank" rel="noopener">https://github.com/singwhatiwanna/dynamic-load-apk</a></p>
+<p>插件化的apk作为独立的apk可以独自安装，也可以用DexClassLoader加载，获取其中需要调用的Activity类，再反射调用即可</p>
+<p>需要解决的两大问题:</p>
+<p>资源管理 ： 插件中的R.drawable.aaaaaa.jpg 在宿主app里面并不存在</p>
+<p>Activity生命周期管理：因为Activity是反射生成的，当你按了返回按钮的时候，Activity只是一个普通类，它并不知道你按下了返回按钮</p>
+<p>#资源管理:</p>
+<p>activity的工作主要是由ContextImpl来完成的， 它在activity中是一个叫做mBase的成员变量。注意到Context中有如下两个抽象方法，看起来是和资源有关的，实际上context就是通过它们来获取资源的，这两个抽象方法的真正实现在ContextImpl中。也即是说，只要我们自己实现这两个方法，就可以解决资源问题了</p>
+<p>/*<em> Return an AssetManager instance for your application’s package. </em>/<br>​    public abstract AssetManager getAssets();</p>
+<p>​    /*<em> Return a Resources instance for your application’s package. </em>/<br>​    public abstract Resources getResources();</p>
+<p>但是首先要把资源添加到AssetManager和Resources里面</p>
+<p>参见：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AssetManager assetManager = <span class="keyword">this</span>.createAssetManager(dexPath);</span><br><span class="line">Resources resources = <span class="keyword">this</span>.createResources(assetManager);</span><br></pre></td></tr></table></figure>
+<p>这里createAssetManager采取了反射addAsset方法将资源加进去</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">private AssetManager createAssetManager(String dexPath) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        AssetManager assetManager = (AssetManager)AssetManager.class.newInstance();</span><br><span class="line">        Method addAssetPath = assetManager.getClass().getMethod(&quot;addAssetPath&quot;, new Class[]&#123;String.class&#125;);</span><br><span class="line">        addAssetPath.invoke(assetManager, new Object[]&#123;dexPath&#125;);</span><br><span class="line">        return assetManager;</span><br><span class="line">    &#125; catch (Exception var4) &#123;</span><br><span class="line">        var4.printStackTrace();</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private Resources createResources(AssetManager assetManager) &#123;</span><br><span class="line">        Resources superRes = this.mContext.getResources();</span><br><span class="line">        Resources resources = new Resources(assetManager, superRes.getDisplayMetrics(), superRes.getConfiguration());</span><br><span class="line">        return resources;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>重点来了:资源已经加进去了，但是怎么获取到更新后的资源呢，这里可以重载获取资源的方法</p>
+<p><code>@Override</code>  </p>
+<p><code>public AssetManager getAssets() {</code>  </p>
+<p>​    <code>return mAssetManager == null ? super.getAssets() : mAssetManager;</code>  </p>
+<p><code>}</code>  </p>
+<p><code>@Override</code>  </p>
+<p><code>public Resources getResources() {</code>  </p>
+<p>​    <code>return mResources == null ? super.getResources() : mResources;</code>  </p>
+<p><code></code>}`  </p>
+<p>这样，插件中的apk也可以使用R.drawable.aaa.png来访问资源了</p>
+<p>#Activity的生命周期管理</p>
+<p>DL这里用的非常好，直接用DLProxyActivity来托管反射生成类的Activity，只要在宿主里面注册一个DLProxyActivity</p>
+<pre><code>&lt;activity
+    android:name=&quot;com.ryg.dynamicload.DLProxyActivity&quot;
+    android:label=&quot;@string/app_name&quot; &gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name=&quot;com.ryg.dynamicload.proxy.activity.VIEW&quot; /&gt;
+
+        &lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
+    &lt;/intent-filter&gt;
+&lt;/activity&gt;
+</code></pre><p>这样这个DLProxyActivity就是在宿主里面可见的，它的生命周期由系统管理，例如我们想执行的是360SafeActivity，只需要反射生成360SafeActivity，并调用setRemoteActivity(Activity a)将360SafeActivity托管给DLProxyActivity管理即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public void attach(DLPlugin remoteActivity, DLPluginManager pluginManager) &#123;</span><br><span class="line">    this.mRemoteActivity = remoteActivity;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>各个生命周期的方法如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">protected void onStart() &#123;</span><br><span class="line">    this.mRemoteActivity.onStart();</span><br><span class="line">    super.onStart();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">protected void onRestart() &#123;</span><br><span class="line">    this.mRemoteActivity.onRestart();</span><br><span class="line">    super.onRestart();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">protected void onResume() &#123;</span><br><span class="line">    this.mRemoteActivity.onResume();</span><br><span class="line">    super.onResume();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">protected void onPause() &#123;</span><br><span class="line">    this.mRemoteActivity.onPause();</span><br><span class="line">    super.onPause();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">protected void onStop() &#123;</span><br><span class="line">    this.mRemoteActivity.onStop();</span><br><span class="line">    super.onStop();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">protected void onDestroy() &#123;</span><br><span class="line">    this.mRemoteActivity.onDestroy();</span><br><span class="line">    super.onDestroy();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就神不知鬼不觉地调用了插件360SafeActivity的生命周期函数</p>
+<p>再看360SafeActivity是怎么反射出来的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@TargetApi</span>(<span class="number">14</span>)</span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">launchTargetActivity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Class&lt;?&gt; localClass = <span class="keyword">this</span>.getClassLoader().loadClass(<span class="keyword">this</span>.mClass);</span><br><span class="line">        Constructor&lt;?&gt; localConstructor = localClass.getConstructor(<span class="keyword">new</span> Class[<span class="number">0</span>]);</span><br><span class="line">        Object instance = localConstructor.newInstance(<span class="keyword">new</span> Object[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">this</span>.mPluginActivity = (DLPlugin)instance;</span><br><span class="line">        ((DLAttachable)<span class="keyword">this</span>.mProxyActivity).attach(<span class="keyword">this</span>.mPluginActivity, <span class="keyword">this</span>.mPluginManager);</span><br><span class="line">        Log.d(<span class="string">"DLProxyImpl"</span>, <span class="string">"instance = "</span> + instance);</span><br><span class="line">        <span class="keyword">this</span>.mPluginActivity.attach(<span class="keyword">this</span>.mProxyActivity, <span class="keyword">this</span>.mPluginPackage);</span><br><span class="line">         <span class="comment">//在这里调用了attch，将360SafeActivity的生命周期交给DLProxyActivity管理</span></span><br><span class="line">        Bundle bundle = <span class="keyword">new</span> Bundle();</span><br><span class="line">        bundle.putInt(<span class="string">"extra.from"</span>, <span class="number">1</span>); <span class="comment">// 声明是从外部启动的</span></span><br><span class="line">        <span class="keyword">this</span>.mPluginActivity.onCreate(bundle);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception var5) &#123;</span><br><span class="line">        var5.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中定义了DLPlugin接口声明了一系列的生命周期函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">public interface DLPlugin &#123;</span><br><span class="line">    void onCreate(Bundle var1);</span><br><span class="line"></span><br><span class="line">    void onStart();</span><br><span class="line"></span><br><span class="line">    void onRestart();</span><br><span class="line"></span><br><span class="line">    void onActivityResult(int var1, int var2, Intent var3);</span><br><span class="line"></span><br><span class="line">    void onResume();</span><br><span class="line"></span><br><span class="line">    void onPause();</span><br><span class="line"></span><br><span class="line">    void onStop();</span><br><span class="line"></span><br><span class="line">    void onDestroy();</span><br><span class="line"></span><br><span class="line">    void attach(Activity var1, DLPluginPackage var2);</span><br><span class="line"></span><br><span class="line">    void onSaveInstanceState(Bundle var1);</span><br><span class="line"></span><br><span class="line">    void onNewIntent(Intent var1);</span><br><span class="line"></span><br><span class="line">    void onRestoreInstanceState(Bundle var1);</span><br><span class="line"></span><br><span class="line">    boolean onTouchEvent(MotionEvent var1);</span><br><span class="line"></span><br><span class="line">    boolean onKeyUp(int var1, KeyEvent var2);</span><br><span class="line"></span><br><span class="line">    void onWindowAttributesChanged(LayoutParams var1);</span><br><span class="line"></span><br><span class="line">    void onWindowFocusChanged(boolean var1);</span><br><span class="line"></span><br><span class="line">    void onBackPressed();</span><br><span class="line"></span><br><span class="line">    boolean onCreateOptionsMenu(Menu var1);</span><br><span class="line"></span><br><span class="line">    boolean onOptionsItemSelected(MenuItem var1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>之后再定义public class DLBasePluginActivity extends Activity implements DLPlugin {  }</p>
+<p>这样我们的360SafeActivity只需要继承于DLBasePluginActivity 就可以了</p>
+<p>其中很奇怪的是Activity里面已经有了void onStart();方法，DLPlugin再定义一个void onStart();方法，</p>
+<p>这样不是方法冲突了吗?假如调用onStart()；它知道调用谁的?</p>
+<p>既然Activity里面已经有了onStart方法了，为什么还要声明一个接口DLPlugin</p>
+<p>后来发现 Activity的生命周期函数onStart，onStop，onCreate这些都是protected方法，而DLPlugin的onStart方法是public的，所以是不冲突的</p>
+<p>但是为什么Activity里面已经有了onStart方法了，为什么还要声明一个接口DLPlugin</p>
+<p>因为onStart，onStop，onCreate这些都是protected方法，protected方法是包访问权限的，在反射生成的实例是不能直接调用的，也就是说</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;?&gt; localClass = <span class="keyword">this</span>.getClassLoader().loadClass(<span class="keyword">this</span>.mClass);</span><br><span class="line">Constructor&lt;?&gt; localConstructor = localClass.getConstructor(<span class="keyword">new</span> Class[<span class="number">0</span>]);</span><br><span class="line">Object instance = localConstructor.newInstance(<span class="keyword">new</span> Object[<span class="number">0</span>]);</span><br><span class="line"><span class="keyword">this</span>.mPluginActivity = (DLPlugin)instance;</span><br><span class="line"></span><br><span class="line"><span class="keyword">this</span>.mPluginActivity.onStart()方法是报错的，假如要使用onStart方法，要反射修改onStart方法的修饰符</span><br></pre></td></tr></table></figure>
+<p>但是为什么我们也可以写这样的代码:</p>
+<p><code>Class MyActivity extends Activity{</code></p>
+<p>​    <code>@Override</code></p>
+<p>​    <code>void onStart(){</code></p>
+<p>​        <code>Log.d(&quot;1&quot;);</code></p>
+<p>​    <code>}</code></p>
+<p><code>}</code></p>
+<p>这是因为这里的MyActivity是由系统托管生命周期的，它的onStart方法是在android.app包内调用的，因为protected方法是包访问权限，所以这里onStart方法不会报异常</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/笔记/" rel="tag"># 笔记</a>
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/14/浅谈glide/" rel="next" title="glide阅读笔记">
+                <i class="fa fa-chevron-left"></i> glide阅读笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/14/dex 脱壳mark/" rel="prev" title="dex脱壳和某个直播app逆向浅谈">
+                dex脱壳和某个直播app逆向浅谈 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">stfnt</p>
+              <p class="site-description motion-element" itemprop="description">something for nothing</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">stfnt</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname, 
+            owner: 'stfnt',
+            repo: 'stfnt.github.io',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'ae4b6909a9a9c7224478b5dfa9e4cb9f8c42d87b',
+            
+                client_id: 'd6dd4ea47cd3ff04f979'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
