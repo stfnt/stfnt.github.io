@@ -92,7 +92,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/03/14/DuiLib阅读笔记/core.png">
 <meta property="og:image" content="http://yoursite.com/2018/03/14/DuiLib阅读笔记/Layout.png">
 <meta property="og:image" content="http://yoursite.com/2018/03/14/DuiLib阅读笔记/Xml.png">
-<meta property="og:updated_time" content="2018-03-16T10:13:27.871Z">
+<meta property="og:updated_time" content="2018-03-16T10:15:20.540Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="duilib阅读笔记">
 <meta name="twitter:description" content="之前读过一次 好多忘记了 mark一下 阅读的时候 尽量去理解其思想，其优秀的设计 和其逻辑实现 地址：https://github.com/duilib/duilib">
@@ -392,10 +392,6 @@
 <p>先看xml的加载</p>
 <p>常规xml通常是这样<img src="/2018/03/14/DuiLib阅读笔记/Xml.png" alt="Xml"></p>
 <p>xml通常可以分为 </p>
-<!--  -->  注释<br><br><name id="1"><br><br><name id="2"><br><br>​    <key></key><br><br></name><br><br>所以需要解析”&lt;?”，<!--,<name />  <name> </name> 这些标签
-
-
-
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>( *pstrText == _T(<span class="string">'!'</span>) || *pstrText == _T(<span class="string">'?'</span>) ) &#123; <span class="comment">//解析&lt;? 和&lt;! 标签</span></span><br><span class="line">            TCHAR ch = *pstrText;</span><br><span class="line">            <span class="keyword">if</span>( *pstrText == _T(<span class="string">'!'</span>) ) ch = _T(<span class="string">'-'</span>);</span><br><span class="line">            <span class="keyword">while</span>( *pstrText != _T(<span class="string">'\0'</span>) &amp;&amp; !(*pstrText == ch &amp;&amp; *(pstrText + <span class="number">1</span>) == _T(<span class="string">'&gt;'</span>)) ) pstrText = ::CharNext(pstrText);</span><br><span class="line">            <span class="keyword">if</span>( *pstrText != _T(<span class="string">'\0'</span>) ) pstrText += <span class="number">2</span>;</span><br><span class="line">            _SkipWhitespace(pstrText);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">TCHAR m_szErrorMsg[<span class="number">100</span>];</span><br><span class="line">TCHAR m_szErrorXML[<span class="number">50</span>];</span><br><span class="line"><span class="keyword">bool</span> m_bPreserveWhitespace;</span><br><span class="line">ULONG m_nReservedElements;</span><br></pre></td></tr></table></figure>
 <p>private:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> _Parse();</span><br><span class="line"><span class="keyword">bool</span> _Parse(LPTSTR&amp; pstrText, ULONG iParent);</span><br><span class="line">XMLELEMENT* _ReserveElement();</span><br><span class="line"><span class="keyword">inline</span> <span class="keyword">void</span> _SkipWhitespace(LPTSTR&amp; pstr) <span class="keyword">const</span>;</span><br><span class="line"><span class="keyword">inline</span> <span class="keyword">void</span> _SkipWhitespace(LPCTSTR&amp; pstr) <span class="keyword">const</span>;</span><br><span class="line"><span class="keyword">inline</span> <span class="keyword">void</span> _SkipIdentifier(LPTSTR&amp; pstr) <span class="keyword">const</span>;</span><br><span class="line"><span class="keyword">inline</span> <span class="keyword">void</span> _SkipIdentifier(LPCTSTR&amp; pstr) <span class="keyword">const</span>;</span><br><span class="line"><span class="keyword">bool</span> _ParseData(LPTSTR&amp; pstrText, LPTSTR&amp; pstrData, <span class="keyword">char</span> cEnd);</span><br><span class="line"><span class="keyword">void</span> _ParseMetaChar(LPTSTR&amp; pstrText, LPTSTR&amp; pstrDest);</span><br><span class="line"><span class="keyword">bool</span> _ParseAttributes(LPTSTR&amp; pstrText);  <span class="comment">//解析属性</span></span><br><span class="line"><span class="keyword">bool</span> _Failed(LPCTSTR pstrError, LPCTSTR pstrLocation = <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure></p>
@@ -446,7 +442,12 @@
 <p>见<code>bool CControlUI::DoPaint(HDC hDC, const RECT&amp; rcPaint, CControlUI* pStopControl)</code></p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> CRenderClip roundClip;</span><br><span class="line">CRenderClip::GenerateRoundClip(hDC, m_rcPaint,  m_rcItem, m_cxyBorderRound.cx, m_cxyBorderRound.cy, roundClip);</span><br><span class="line">    PaintBkColor(hDC);</span><br><span class="line">    PaintBkImage(hDC);</span><br><span class="line">    PaintStatusImage(hDC);</span><br><span class="line">    PaintText(hDC);</span><br><span class="line">    PaintBorder(hDC);</span><br><span class="line">    <span class="comment">// 绘制循序：背景颜色-&gt;背景图-&gt;状态图-&gt;文本-&gt;边框</span></span><br><span class="line">	<span class="comment">// 这里也是感觉逻辑很清晰，先绘制背景颜色，再绘制背景图，再绘制状态图,如control处于hover状态，pushed状态，getFocus状态，killFocus状态，再绘制文字和绘制边框</span></span><br></pre></td></tr></table></figure>
 <p>感觉其中有很多思想和设计值得学习的，完结</p>
---></name>
+<p>很奇怪的md截断字段？？？ 异常导致出错了？？？</p>
+<p><!--  -->  注释</p>
+<name id="1"><br><br><name id="2"><br><br>​    <key></key><br><br></name>
+
+<p>所以需要解析”&lt;?”，&lt;!–,<name>  <name> </name> 这些标签</name></p>
+</name>
       
     </div>
     
